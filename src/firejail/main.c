@@ -2272,6 +2272,12 @@ int main(int argc, char **argv) {
 				return 1;
 			}
 		}
+		else if (strcmp(argv[i], "--terminate-orphans") == 0) {
+			cfg.terminate_orphans = 1;
+		}
+		else if (strcmp(argv[i], "--deterministic-exit-code") == 0) {
+			cfg.deterministic_exit_code = 1;
+		}
 		else {
 			// double dash - positional params to follow
 			if (strcmp(argv[i], "--") == 0) {

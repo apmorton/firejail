@@ -280,6 +280,10 @@ typedef struct config_t {
 	char **original_argv;
 	int original_argc;
 	int original_program_index;
+
+	// extra
+	int terminate_orphans;
+	int deterministic_exit_code;
 } Config;
 extern Config cfg;
 

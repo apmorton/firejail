@@ -271,6 +271,7 @@ static int monitor_application(pid_t app_pid) {
 	}
 
 	int status = 0;
+	int app_status = 0;
 	while (monitored_pid) {
 		usleep(20000);
 		char *msg;
@@ -294,6 +295,16 @@ static int monitor_application(pid_t app_pid) {
 			if (rv == -1) { // we can get here if we have processes joining the sandbox (ECHILD)
 				sleep(1);
 				break;
+			}
+
+			if (rv == app_pid) {
+				app_status = status;
+
+				if (cfg.terminate_orphans) {
+					if (arg_debug)
+						printf("App exited, terminating any orphans\n");
+					kill(-1, SIGTERM);
+				}
 			}
 
 			// handle --timeout
@@ -350,6 +361,10 @@ static int monitor_application(pid_t app_pid) {
 
 		if (monitored_pid != 0 && arg_debug)
 			printf("Sandbox monitor: monitoring %d\n", monitored_pid);
+	}
+
+	if (cfg.deterministic_exit_code && WIFEXITED(app_status)) {
+		status = app_status;
 	}
 
 	// return the latest exit status.
