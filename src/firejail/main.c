@@ -2278,6 +2278,14 @@ int main(int argc, char **argv) {
 		else if (strcmp(argv[i], "--deterministic-exit-code") == 0) {
 			cfg.deterministic_exit_code = 1;
 		}
+		else if (strcmp(argv[i], "--private-cwd") == 0) {
+			if (!cfg.home_private) {
+				fprintf(stderr, "Error: --private must be specified before --private-cwd\n");
+				exit(1);
+			}
+
+			cfg.cwd = cfg.home_private;
+		}
 		else {
 			// double dash - positional params to follow
 			if (strcmp(argv[i], "--") == 0) {
