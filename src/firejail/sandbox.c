@@ -303,7 +303,7 @@ static int monitor_application(pid_t app_pid) {
 				if (cfg.terminate_orphans) {
 					if (arg_debug)
 						printf("App exited, terminating any orphans\n");
-					kill(-1, SIGTERM);
+					//kill(-1, SIGTERM);
 				}
 			}
 
@@ -322,6 +322,9 @@ static int monitor_application(pid_t app_pid) {
 		while(rv != monitored_pid);
 		if (arg_debug)
 			printf("Sandbox monitor: waitpid %d retval %d status %d\n", monitored_pid, rv, status);
+
+		if (cfg.terminate_orphans)
+			break;
 
 		DIR *dir;
 		if (!(dir = opendir("/proc"))) {
