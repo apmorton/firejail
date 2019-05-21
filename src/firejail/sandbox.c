@@ -370,6 +370,21 @@ static int monitor_application(pid_t app_pid) {
 		status = app_status;
 	}
 
+	// shamelessly stolen from http://git.savannah.gnu.org/cgit/bash.git/tree/nojobs.c?h=bash-5.0#n896
+	if (WIFSTOPPED(status) == 0 && WIFSIGNALED(status) && WTERMSIG(status) != SIGINT && WTERMSIG(status) != SIGTERM) {
+		char *sigstr = strsignal(WTERMSIG(status));
+		if (sigstr) {
+			fprintf(stderr, "%s", sigstr);
+		}
+		else {
+			fprintf(stderr, "Signal %d", WTERMSIG(status));
+		}
+
+		if (WCOREDUMP(status))
+			fprintf(stderr, " (core dumped)");
+		fprintf(stderr, "\n");
+	}
+
 	// return the latest exit status.
 	return status;
 }
